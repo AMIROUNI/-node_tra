@@ -35,9 +35,42 @@ router.get('/find/:name', async (req, res) => {
 });
 
 
-router.post('/update', async (req, res) => {
+router.put('/update/:name', async (req, res) => {
     try {
-        const user = await User
+        const name= req.params.name
+        const user =await User.findOne({name})
+        if(!user){
+            res.status(404).send({message: 'user not found'});
+        }
+
+
+        await User.findOneAndUpdate({name},{set:{name:req?.body?.name || 'ali'}},{new:true})
+        res.status(200).send({message: 'user updated successfully', user});
+
+    }catch(error){
+        res.status(500).send({error});
+    }
+});
+
+
+
+    
+router.delete('/delete/:name', async (req, res) => {
+    try {
+        const name= req.params.name
+        const user =await User.findOne({name})
+        if(!user){
+            res.status(404).send({message: 'user not found'});
+        }
+
+
+       await User.deleteOne({name})
+        res.status(200).send({message: 'user deleted successfully', user});
+
+    }catch(error){
+        res.status(500).send({error});
+    }
+
         
 
 
