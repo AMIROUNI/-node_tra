@@ -1,6 +1,9 @@
 const express = require('express');
 const User = require('../models/user');
 const router = express.Router();
+const authenticate=require('../authMiddleware/authMiddleware')
+
+const user.controller=require('../controllers/user.controller')
 
 router.post('/create', async (req, res) => {
     try {
@@ -11,6 +14,35 @@ router.post('/create', async (req, res) => {
         res.status(500).send({error});
     }
 });
+
+
+
+
+router.post('/register',user.controller.addUser)
+
+
+
+
+
+
+
+
+
+
+router.get('/me',authenticate,async (req,res)=>{
+   try{
+    console.log("running.........")
+     const user =await User.findById(req.user.userId).select('-password');
+    if(!user){
+        res.status(404).send({message:'User not found'});
+    }
+    res.send(user)
+
+   }catch(error){
+    res.status(500).send({message:error.message})
+   };
+    
+})
 
 router.get('/all', async (req, res) => {
     try {

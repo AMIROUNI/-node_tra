@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
 
 
-
-
-
-
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -27,7 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         
         minlength: 6
-    }
+    },
 }
 
 
@@ -36,16 +32,18 @@ const userSchema = new mongoose.Schema({
 
 
 
-userSchema.pre('save',async (next)=>{
-    if(!this.isModified('password')){
+// 🔹 Hash du mot de passe avant de sauvegarder l'utilisateur
+userSchema.pre('save', async function (next) {
+    if (this.isModified('password')){
+        this.password =await bcryptjs.hash(this.password,10)}
+        
+        
+ next(); 
+  
+});
 
-        this.password= await bcryptjs.hash(this.password,10)
-        return next();
-       
-    }
-})
-
-userSchema.method.comparePassword=(userPassword)=>{
+userSchema.methods.comparePassword = function(userPassword)
+{
     return bcryptjs.compare(userPassword,this.password)
 }
 
